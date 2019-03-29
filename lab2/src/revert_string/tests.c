@@ -23,8 +23,29 @@ void testRevertString(void) {
   CU_ASSERT_STRING_EQUAL_FATAL(str_with_even_chars_num, "dcba");
 }
 
+/////////////////////////////
+void testRevertString2(void) {
+  char simple_string[] = "Hello";
+  char str_with_spaces[] = "String with spaces";
+  char str_with_odd_chars_num[] = "abc";
+  char str_with_even_chars_num[] = "abcd";
+
+  RevertString(simple_string);
+  CU_ASSERT_STRING_EQUAL_FATAL(simple_string, "olleH");
+
+  RevertString(str_with_spaces);
+  CU_ASSERT_STRING_EQUAL_FATAL(str_with_spaces, "secaps htiw gnirtS");
+
+  RevertString(str_with_odd_chars_num);
+  CU_ASSERT_STRING_EQUAL_FATAL(str_with_odd_chars_num, "cba");
+
+  RevertString(str_with_even_chars_num);
+  CU_ASSERT_STRING_EQUAL_FATAL(str_with_even_chars_num, "dcba");
+}
+
 int main() {
   CU_pSuite pSuite = NULL;
+  CU_pSuite pSuite2 = NULL;
 
   /* initialize the CUnit test registry */
   if (CUE_SUCCESS != CU_initialize_registry()) return CU_get_error();
@@ -35,11 +56,37 @@ int main() {
     CU_cleanup_registry();
     return CU_get_error();
   }
+  
+  /////////////////
+  pSuite2 = CU_add_suite("Suite2", NULL, NULL);
+  if (NULL == pSuite2) {
+    CU_cleanup_registry();
+    return CU_get_error();
+  }
+  
 
   /* add the tests to the suite */
   /* NOTE - ORDER IS IMPORTANT - MUST TEST fread() AFTER fprintf() */
   if ((NULL == CU_add_test(pSuite, "test of RevertString function",
                            testRevertString))) {
+    CU_cleanup_registry();
+    return CU_get_error();
+  }
+   if ((NULL == CU_add_test(pSuite, "test of RevertString function",
+                           testRevertString2))) {
+    CU_cleanup_registry();
+    return CU_get_error();
+  }
+  
+  
+  ///////////////////
+  if ((NULL == CU_add_test(pSuite2, "test of RevertString function",
+                           testRevertString))) {
+    CU_cleanup_registry();
+    return CU_get_error();
+  }
+  if ((NULL == CU_add_test(pSuite2, "test of RevertString function",
+                           testRevertString2))) {
     CU_cleanup_registry();
     return CU_get_error();
   }
